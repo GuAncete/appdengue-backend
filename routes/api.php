@@ -32,7 +32,7 @@ Route::delete('/denuncias/{denuncia}', [DenunciaController::class, 'destroy']); 
 // Rotas para Fotos
 Route::get('/fotos', [FotoController::class, 'index']); // GET - http://127.0.0.1:8000/api/fotos?page=1
 Route::get('/fotos/{foto}', [FotoController::class, 'show']); // GET - http://127.0.0.1:8000/api/fotos/1
-Route::post('/fotos', [FotoController::class, 'store']); // POST - http://127.0.0.1:8000/api/fotos
+Route::post('/fotos/{idDenuncia}', [App\Http\Controllers\Api\FotoController::class, 'store']); // POST - http://127.0.0.1:8000/api/fotos
 Route::put('/fotos/{foto}', [FotoController::class, 'update']); // PUT - http://127.0.0.1:8000/api/fotos/1
 Route::delete('/fotos/{foto}', [FotoController::class, 'destroy']); // DELETE - http://127.0.0.1:8000/api/fotos/1
 

@@ -1,0 +1,536 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "API Dengue",
+        "description": "Documentação da API em Laravel com Swagger",
+        "version": "1.0.0"
+    },
+    "servers": [
+        {
+            "url": "http://localhost:8000",
+            "description": "Servidor local"
+        }
+    ],
+    "paths": {
+        "/api/denuncias": {
+            "get": {
+                "tags": [
+                    "Denuncia"
+                ],
+                "summary": "Lista todas as denúncias",
+                "operationId": "f73bb1b07b8e31f2bb9a6796caaddd70",
+                "responses": {
+                    "200": {
+                        "description": "Lista de denúncias retornada com sucesso"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Denuncia"
+                ],
+                "summary": "Cadastra uma nova denúncia",
+                "operationId": "24673d8163545379da36426235bd14af",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "IdUsuario",
+                                    "TipoFoco",
+                                    "Descricao",
+                                    "Longitude",
+                                    "Latitude",
+                                    "Status"
+                                ],
+                                "properties": {
+                                    "IdUsuario": {
+                                        "type": "integer"
+                                    },
+                                    "TipoFoco": {
+                                        "type": "string"
+                                    },
+                                    "Descricao": {
+                                        "type": "string"
+                                    },
+                                    "Longitude": {
+                                        "type": "number",
+                                        "format": "float"
+                                    },
+                                    "Latitude": {
+                                        "type": "number",
+                                        "format": "float"
+                                    },
+                                    "Status": {
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Denúncia cadastrada com sucesso"
+                    },
+                    "400": {
+                        "description": "Erro ao cadastrar denúncia"
+                    }
+                }
+            }
+        },
+        "/api/denuncias/{id}": {
+            "get": {
+                "tags": [
+                    "Denuncia"
+                ],
+                "summary": "Exibe uma denúncia específica",
+                "operationId": "e5e49bea73989a289b7d9f238b7264cb",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID da denúncia",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Denúncia retornada com sucesso"
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Denuncia"
+                ],
+                "summary": "Atualiza uma denúncia existente",
+                "operationId": "d1da1ce4dd5699e6c2b0f1d90e972d27",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID da denúncia",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "IdUsuario",
+                                    "Descricao",
+                                    "Endereco",
+                                    "Status"
+                                ],
+                                "properties": {
+                                    "IdUsuario": {
+                                        "type": "integer"
+                                    },
+                                    "Descricao": {
+                                        "type": "string"
+                                    },
+                                    "Endereco": {
+                                        "type": "string"
+                                    },
+                                    "Status": {
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Denúncia atualizada com sucesso"
+                    },
+                    "400": {
+                        "description": "Erro ao atualizar denúncia"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Denuncia"
+                ],
+                "summary": "Remove uma denúncia",
+                "operationId": "0177bbf6b8e2f3d0cab652bcf5f841c8",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID da denúncia",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Denúncia removida com sucesso"
+                    },
+                    "400": {
+                        "description": "Erro ao remover denúncia"
+                    }
+                }
+            }
+        },
+        "/api/fotos": {
+            "get": {
+                "tags": [
+                    "Foto"
+                ],
+                "summary": "Lista todas as fotos",
+                "operationId": "62fb3b780c2bf72af53a52f88b663920",
+                "responses": {
+                    "200": {
+                        "description": "Lista de fotos retornada com sucesso"
+                    }
+                }
+            }
+        },
+        "/api/fotos/{id}": {
+            "get": {
+                "tags": [
+                    "Foto"
+                ],
+                "summary": "Exibe uma foto específica",
+                "operationId": "9452aed03a104d1cf263da76c8efc8b5",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID da foto",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Foto retornada com sucesso"
+                    },
+                    "404": {
+                        "description": "Foto não encontrada"
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Foto"
+                ],
+                "summary": "Atualiza uma foto existente",
+                "operationId": "71b915ba939322577bf56933d5bbb86e",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID da foto",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "properties": {
+                                    "foto": {
+                                        "description": "Arquivo da nova foto",
+                                        "type": "string",
+                                        "format": "binary"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Foto atualizada com sucesso"
+                    },
+                    "404": {
+                        "description": "Foto não encontrada"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Foto"
+                ],
+                "summary": "Remove uma foto",
+                "operationId": "ba54ad653491fe9f59294ee9ba81bc57",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID da foto",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Foto excluída com sucesso"
+                    },
+                    "404": {
+                        "description": "Foto não encontrada"
+                    }
+                }
+            }
+        },
+        "/api/fotos/{idDenuncia}": {
+            "post": {
+                "tags": [
+                    "Foto"
+                ],
+                "summary": "Cadastra uma nova foto para uma denúncia",
+                "operationId": "bc301d633a5d849a037998c18b0cfdc3",
+                "parameters": [
+                    {
+                        "name": "idDenuncia",
+                        "in": "path",
+                        "description": "ID da denúncia",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "required": [
+                                    "foto"
+                                ],
+                                "properties": {
+                                    "foto": {
+                                        "description": "Arquivo da foto",
+                                        "type": "string",
+                                        "format": "binary"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Foto salva com sucesso"
+                    },
+                    "400": {
+                        "description": "Nenhuma foto enviada"
+                    }
+                }
+            }
+        },
+        "/api/users": {
+            "get": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Lista usuários",
+                "operationId": "566aed8efb436ca506e0ef51a032ecd9",
+                "responses": {
+                    "200": {
+                        "description": "Lista paginada de usuários"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Cria um novo usuário",
+                "operationId": "be551c1d694a01c164966f58bfa77013",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "name",
+                                    "email",
+                                    "password",
+                                    "phone"
+                                ],
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "João da Silva"
+                                    },
+                                    "email": {
+                                        "type": "string",
+                                        "example": "joao@email.com"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "example": "123456"
+                                    },
+                                    "phone": {
+                                        "type": "string",
+                                        "example": "11999999999"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Usuário criado com sucesso"
+                    },
+                    "400": {
+                        "description": "Erro ao criar usuário"
+                    }
+                }
+            }
+        },
+        "/api/users/{id}": {
+            "get": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Exibe um usuário pelo ID",
+                "operationId": "6f51bd5fa2dddcd25e44cfa53dcbd10a",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID do usuário",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Usuário encontrado"
+                    },
+                    "404": {
+                        "description": "Usuário não encontrado"
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Atualiza um usuário existente",
+                "operationId": "070e37fc9aff78ae73860751bc990ed3",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID do usuário",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "João da Silva"
+                                    },
+                                    "email": {
+                                        "type": "string",
+                                        "example": "joao@email.com"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "example": "123456"
+                                    },
+                                    "phone": {
+                                        "type": "string",
+                                        "example": "11999999999"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Usuário atualizado com sucesso"
+                    },
+                    "400": {
+                        "description": "Erro ao atualizar usuário"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Exclui um usuário pelo ID",
+                "operationId": "0b4133ed462528a5e648b88ead11e929",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID do usuário",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Usuário excluído com sucesso"
+                    },
+                    "400": {
+                        "description": "Erro ao excluir usuário"
+                    }
+                }
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Denuncia",
+            "description": "Denuncia"
+        },
+        {
+            "name": "Foto",
+            "description": "Foto"
+        },
+        {
+            "name": "Users",
+            "description": "Users"
+        }
+    ]
+}

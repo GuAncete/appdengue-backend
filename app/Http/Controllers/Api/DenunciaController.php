@@ -10,6 +10,17 @@ use Illuminate\Support\Facades\DB;
 
 class DenunciaController extends Controller
 {
+    /**
+     * @OA\Get(
+     *     path="/api/denuncias",
+     *     summary="Lista todas as denúncias",
+     *     tags={"Denuncia"},
+     *     @OA\Response(
+     *         response=200,
+     *         description="Lista de denúncias retornada com sucesso"
+     *     )
+     * )
+     */
     public function index(){
 
         $denuncias = Denuncia::orderBy('IdDenuncia', 'DESC')->get();
@@ -20,6 +31,24 @@ class DenunciaController extends Controller
         ], 200);
     }
 
+    /**
+     * @OA\Get(
+     *     path="/api/denuncias/{id}",
+     *     summary="Exibe uma denúncia específica",
+     *     tags={"Denuncia"},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         description="ID da denúncia",
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Denúncia retornada com sucesso"
+     *     )
+     * )
+     */
     public function show(Denuncia $denuncia){
         return response()->json([
             'status' => "ok",
@@ -27,6 +56,33 @@ class DenunciaController extends Controller
         ], 200);
     }
 
+    /**
+     * @OA\Post(
+     *     path="/api/denuncias",
+     *     summary="Cadastra uma nova denúncia",
+     *     tags={"Denuncia"},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             required={"IdUsuario","TipoFoco","Descricao","Longitude","Latitude","Status"},
+     *             @OA\Property(property="IdUsuario", type="integer"),
+     *             @OA\Property(property="TipoFoco", type="string"),
+     *             @OA\Property(property="Descricao", type="string"),
+     *             @OA\Property(property="Longitude", type="number", format="float"),
+     *             @OA\Property(property="Latitude", type="number", format="float"),
+     *             @OA\Property(property="Status", type="string")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=201,
+     *         description="Denúncia cadastrada com sucesso"
+     *     ),
+     *     @OA\Response(
+     *         response=400,
+     *         description="Erro ao cadastrar denúncia"
+     *     )
+     * )
+     */
     public function store(Request $request){
         DB::beginTransaction();
 
@@ -56,6 +112,38 @@ class DenunciaController extends Controller
         }
     }
 
+    /**
+     * @OA\Put(
+     *     path="/api/denuncias/{id}",
+     *     summary="Atualiza uma denúncia existente",
+     *     tags={"Denuncia"},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         description="ID da denúncia",
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             required={"IdUsuario","Descricao","Endereco","Status"},
+     *             @OA\Property(property="IdUsuario", type="integer"),
+     *             @OA\Property(property="Descricao", type="string"),
+     *             @OA\Property(property="Endereco", type="string"),
+     *             @OA\Property(property="Status", type="string")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Denúncia atualizada com sucesso"
+     *     ),
+     *     @OA\Response(
+     *         response=400,
+     *         description="Erro ao atualizar denúncia"
+     *     )
+     * )
+     */
     public function update(Request $request, Denuncia $denuncia){
         DB::beginTransaction();
 
@@ -82,6 +170,28 @@ class DenunciaController extends Controller
         }
     }
 
+    /**
+     * @OA\Delete(
+     *     path="/api/denuncias/{id}",
+     *     summary="Remove uma denúncia",
+     *     tags={"Denuncia"},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         description="ID da denúncia",
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Denúncia removida com sucesso"
+     *     ),
+     *     @OA\Response(
+     *         response=400,
+     *         description="Erro ao remover denúncia"
+     *     )
+     * )
+     */
     public function destroy(Denuncia $denuncia){
 
         try{

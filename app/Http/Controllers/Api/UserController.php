@@ -6,15 +6,24 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\UserRequest;
 use App\Models\User;
 use Exception;
-use Illuminate\Database\Eloquent\Casts\Json;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
 
 class UserController extends Controller
 {
+    /**
+     * @OA\Get(
+     *     path="/api/users",
+     *     summary="Lista usuários",
+     *     tags={"Users"},
+     *     @OA\Response(
+     *         response=200,
+     *         description="Lista paginada de usuários"
+     *     )
+     * )
+     */
     public function index(): JsonResponse
     {
-        // Recupera os dados dos usuários no banco, ordena por ID de forma decrescente e paginados
         $users = User::orderBy('id', 'DESC')->paginate(10);
 
         return response()->json([
@@ -23,15 +32,61 @@ class UserController extends Controller
         ], 200);
     }
 
+    /**
+     * @OA\Get(
+     *     path="/api/users/{id}",
+     *     summary="Exibe um usuário pelo ID",
+     *     tags={"Users"},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         description="ID do usuário",
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Usuário encontrado"
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Usuário não encontrado"
+     *     )
+     * )
+     */
     public function show(User $user): JsonResponse
     {
-        // Retorna o usuario selecionado
         return response()->json([
             'status' => "ok",
             'users' => $user
         ], 200);
     }
 
+    /**
+     * @OA\Post(
+     *     path="/api/users",
+     *     summary="Cria um novo usuário",
+     *     tags={"Users"},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             required={"name","email","password","phone"},
+     *             @OA\Property(property="name", type="string", example="João da Silva"),
+     *             @OA\Property(property="email", type="string", example="joao@email.com"),
+     *             @OA\Property(property="password", type="string", example="123456"),
+     *             @OA\Property(property="phone", type="string", example="11999999999")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=201,
+     *         description="Usuário criado com sucesso"
+     *     ),
+     *     @OA\Response(
+     *         response=400,
+     *         description="Erro ao criar usuário"
+     *     )
+     * )
+     */
     public function store(UserRequest $request): JsonResponse
     {
         DB::beginTransaction();
@@ -44,7 +99,6 @@ class UserController extends Controller
                 'phone' => $request->phone
             ]);
 
-            //Operação concluída com êxito
             DB::commit();
             return response()->json([
                 'status' => "ok",
@@ -52,10 +106,8 @@ class UserController extends Controller
                 'message' => "Usuário cadastrado com sucesso"
             ], 201);
         } catch (Exception $e) {
-            //Operação não concluida com êxito
             DB::rollBack();
 
-            //retorna uma mensagem de erro 400
             return response()->json([
                 'status' => "error",
                 'message' => "Usuário não cadastrado"
@@ -63,13 +115,42 @@ class UserController extends Controller
         }
     }
 
+    /**
+     * @OA\Put(
+     *     path="/api/users/{id}",
+     *     summary="Atualiza um usuário existente",
+     *     tags={"Users"},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         description="ID do usuário",
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             @OA\Property(property="name", type="string", example="João da Silva"),
+     *             @OA\Property(property="email", type="string", example="joao@email.com"),
+     *             @OA\Property(property="password", type="string", example="123456"),
+     *             @OA\Property(property="phone", type="string", example="11999999999")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Usuário atualizado com sucesso"
+     *     ),
+     *     @OA\Response(
+     *         response=400,
+     *         description="Erro ao atualizar usuário"
+     *     )
+     * )
+     */
     public function update(UserRequest $request, User $user): JsonResponse
     {
-        //Iniciar a transação
         DB::beginTransaction();
 
-        try{
-            //Editar o registro no banco de dados
+        try {
             $user->update([
                 'name' => $request->name,
                 'email' => $request->email,
@@ -77,7 +158,6 @@ class UserController extends Controller
                 'phone' => $request->phone
             ]);
 
-            //Operação concluída com êxito
             DB::commit();
 
             return response()->json([
@@ -86,37 +166,49 @@ class UserController extends Controller
                 'message' => 'Usuário atualizado com sucesso'
             ], 200);
 
-        }catch(Exception $e){
-            //Operação não concluida com êxito
+        } catch (Exception $e) {
             DB::rollBack();
 
-            //retorna uma mensagem de erro 400
             return response()->json([
                 'status' => "error",
                 'message' => "Usuário não atualizado"
             ], 400);
         }
-
-        return response()->json([
-            'status' => "ok",
-            'users' => $request,
-            'message' => 'Usuário atualizado com sucesso'
-        ], 200);
     }
 
+    /**
+     * @OA\Delete(
+     *     path="/api/users/{id}",
+     *     summary="Exclui um usuário pelo ID",
+     *     tags={"Users"},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         description="ID do usuário",
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Usuário excluído com sucesso"
+     *     ),
+     *     @OA\Response(
+     *         response=400,
+     *         description="Erro ao excluir usuário"
+     *     )
+     * )
+     */
     public function destroy(User $user): JsonResponse
     {
-
         try {
             $user->delete();
 
             return response()->json([
                 'status' => "ok",
-                'user' => $user, 
+                'user' => $user,
                 'message' => "Usuário excluído com sucesso"
             ], 200);
         } catch (Exception $e) {
-
             return response()->json([
                 'status' => "error",
                 'message' => "Usuário não excluído"
