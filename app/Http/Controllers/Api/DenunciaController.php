@@ -23,8 +23,9 @@ class DenunciaController extends Controller
      */
     public function index(){
 
-        $denuncias = Denuncia::orderBy('IdDenuncia', 'DESC')->get();
+        $denuncias = Denuncia::with('fotos')->orderBy('DataCriacao', 'desc')->get();
 
+        
         return response()->json([
             'status' => "ok",
             'denuncias' => $denuncias
@@ -50,6 +51,8 @@ class DenunciaController extends Controller
      * )
      */
     public function show(Denuncia $denuncia){
+
+        $denuncia->load('fotos');
         return response()->json([
             'status' => "ok",
             'denuncia' => $denuncia

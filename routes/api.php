@@ -12,11 +12,9 @@ use Illuminate\Support\Facades\Route;
 Route::post('/login', [LoginController::class, 'login'])->name('login');
 Route::post('/users', [UserController::class, 'store']); // POST - http://127.0.0.1:8000/api/users
 
+//mover pro sanctum dnv dps
 
-Route::group(['middleware' => ['auth:sanctum']], function () {
-    // Rotas protegidas por autenticação
-    Route::post('/logout/{user}', [LoginController::class, 'logout']); // POST - http://127.0.0.1:8000/api/logout
-    // Rotas para usuários
+   // Rotas para usuários
     Route::get('/users', [UserController::class, 'index']); // GET - http://127.0.0.1:8000/api/users?page=1
     Route::get('/users/{user}', [UserController::class, 'show']); // GET - http://127.0.0.1:8000/api/users/1
     Route::put('/users/{user}', [UserController::class, 'update']); // PUT - http://127.0.0.1:8000/api/users/1
@@ -50,4 +48,10 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::post('/historicostatus', [HistoricoStatusController::class, 'store']); // POST - http://127.0.0.1:8000/api/historico-status
     Route::put('/historicostatus/{historicoStatus}', [HistoricoStatusController::class, 'update']); // PUT - http://127.0.0.1:8000/api/historico-status/1
     Route::delete('/historicostatus/{historicoStatus}', [HistoricoStatusController::class, 'destroy']); // DELETE - http://127.0.0.1:8000/api/historico-status/1
+
+
+Route::group(['middleware' => ['auth:sanctum']], function () {
+    // Rotas protegidas por autenticação
+    Route::post('/logout/{user}', [LoginController::class, 'logout']); // POST - http://127.0.0.1:8000/api/logout
+ 
 });
