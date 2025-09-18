@@ -10,9 +10,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 Route::post('/login', [LoginController::class, 'login'])->name('login');
-Route::post('/users', [UserController::class, 'store']); // POST - http://127.0.0.1:8000/api/users
-
-//mover pro sanctum dnv dps
+Route::post('/users', [UserController::class, 'store']); // POST - http://127.0.0.1:8000//mover pro sanctum dnv dps
+Route::post('/forgot-password', [UserController::class, 'forgotPassword']); // POST - http://127.0.0.1:8000/api/forgot-password
+Route::post('/reset-password', [UserController::class, 'resetPassword']); // POST - http://127.0.0.1:8000/api/reset-password
 
    // Rotas para usuários
     Route::get('/users', [UserController::class, 'index']); // GET - http://127.0.0.1:8000/api/users?page=1
@@ -54,4 +54,5 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     // Rotas protegidas por autenticação
     Route::post('/logout/{user}', [LoginController::class, 'logout']); // POST - http://127.0.0.1:8000/api/logout
  
+
 });

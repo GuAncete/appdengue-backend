@@ -7,7 +7,11 @@ use App\Http\Requests\UserRequest;
 use App\Models\User;
 use Exception;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Password;
+use Illuminate\Support\Str;
 
 class UserController extends Controller
 {
@@ -165,7 +169,6 @@ class UserController extends Controller
                 'user' => $user,
                 'message' => 'Usuário atualizado com sucesso'
             ], 200);
-
         } catch (Exception $e) {
             DB::rollBack();
 
@@ -214,5 +217,59 @@ class UserController extends Controller
                 'message' => "Usuário não excluído"
             ], 400);
         }
+    }
+
+    public function forgotPassword(Request $request): JsonResponse
+    {
+        $request->validate([
+            'email' => 'required|email',
+        ]);
+
+        $status = Password::sendResetLink(
+            $request->only('email')
+        );
+
+        if ($status === Password::RESET_LINK_SENT) {
+            return response()->json([
+                'status' => 'ok',
+                'message' => __($status), // retorna a mensagem traduzida do Laravel
+            ], 200);
+        }
+
+        return response()->json([
+            'status' => 'error',
+            'message' => __($status),
+        ], 400);
+    }
+
+    public function resetPassword(Request $request): JsonResponse
+    {
+        $request->validate([
+            'token' => 'required|string',
+            'email' => 'required|email',
+            'password' => 'required|min:6|confirmed'
+        ]);
+
+        $status = Password::reset(
+            $request->only('email', 'password', 'password_confirmation', 'token'),
+            function (User $user, string $password) {
+                $user->forceFill([
+                    'password' => Hash::make($password)
+                ])->setRememberToken(Str::random(60));
+                $user->save();
+            }
+        );
+
+        if ($status == Password::PASSWORD_RESET) {
+            return response()->json([
+                'status' => true,
+                'message' => "Senha resetada com sucesso"
+            ], 200);
+        }
+
+        return response()->json([
+            'status' => false,
+            'message' => "Erro ao resetar a senha"
+        ], 400);
     }
 }
