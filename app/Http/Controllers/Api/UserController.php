@@ -100,7 +100,8 @@ class UserController extends Controller
                 'name' => $request->name,
                 'email' => $request->email,
                 'password' => $request->password,
-                'phone' => $request->phone
+                'phone' => $request->phone,
+                'user_tipo' => $request->user_tipo
             ]);
 
             DB::commit();
@@ -159,7 +160,8 @@ class UserController extends Controller
                 'name' => $request->name,
                 'email' => $request->email,
                 'password' => $request->password,
-                'phone' => $request->phone
+                'phone' => $request->phone,
+                'user_tipo' => $request->user_tipo
             ]);
 
             DB::commit();
