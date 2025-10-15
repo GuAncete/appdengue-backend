@@ -7,6 +7,8 @@ use App\Models\Denuncia;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
+use Carbon\Carbon;
 
 class DenunciaController extends Controller
 {
@@ -211,4 +213,65 @@ class DenunciaController extends Controller
             ], 400);
         }
     }
+
+    /**
+ * Marca uma denúncia como finalizada.
+ */
+public function finalizar(Denuncia $denuncia)
+    {
+        // Verifica se a denúncia já foi finalizada para não sobrescrever a data
+        if ($denuncia->data_fim) {
+            return response()->json([
+                'message' => 'Esta denúncia já foi finalizada anteriormente.'
+            ], 409); // 409 Conflict
+        }
+
+        // Atualiza a coluna 'data_fim' com a data e hora atuais
+        $denuncia->data_fim = now();
+        $denuncia->save();
+
+        // Retorna uma resposta de sucesso
+        return response()->json([
+            'message' => 'Denúncia finalizada com sucesso!',
+            'denuncia' => $denuncia
+        ]);
+    }
+
+        public function relatorio()
+    {
+        // 1. Pega o usuário que está autenticado
+        $user = Auth::user();
+
+        // 2. Trava de Segurança: Verifica se o usuário é um administrador (tipo 1)
+        if ($user->user_tipo != 1) {
+            return response()->json(['message' => 'Acesso não autorizado.'], 403); // 403 Forbidden
+        }
+
+        // 3. Busca todas as denúncias, ordenando pelas mais recentes
+        $denuncias = Denuncia::orderBy('DataCriacao', 'desc')->get();
+
+        // 4. Mapeia os resultados para adicionar o tempo de resolução
+        $relatorio = $denuncias->map(function ($denuncia) {
+            $tempoResolucao = null;
+            if ($denuncia->data_fim) {
+                $criacao = Carbon::parse($denuncia->DataCriacao);
+                $finalizacao = Carbon::parse($denuncia->data_fim);
+                // Calcula a diferença em um formato legível para humanos
+                $tempoResolucao = $criacao->diffForHumans($finalizacao, true); // Ex: "5 dias", "2 horas"
+            }
+
+            return [
+                'id' => $denuncia->IdDenuncia,
+                'descricao' => $denuncia->Descricao,
+                'status' => $denuncia->Status,
+                'data_criacao' => $denuncia->DataCriacao,
+                'data_finalizacao' => $denuncia->data_fim,
+                'tempo_resolucao' => $tempoResolucao
+            ];
+        });
+
+        // 5. Retorna o relatório completo
+        return response()->json($relatorio);
+    }
+
 }

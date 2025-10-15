@@ -115,7 +115,7 @@ class FotoController extends Controller
         return response()->json([
             'message' => 'Foto salva com sucesso',
             'foto' => $foto,
-            'url' => url('storage/' . $foto->Caminho)
+            'url' => url('storage/' . $foto->CaminhoArquivo)
         ], 201);
     }
 
@@ -165,7 +165,7 @@ class FotoController extends Controller
 
         if ($request->hasFile('foto')) {
             // Deleta a foto antiga
-            if ($foto->Caminho && Storage::disk('public')->exists($foto->Caminho)) {
+            if ($foto->Caminho && Storage::disk('public')->exists($foto->CaminhoArquivo)) {
                 Storage::disk('public')->delete($foto->Caminho);
             }
 

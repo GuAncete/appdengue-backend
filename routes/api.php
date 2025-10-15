@@ -9,50 +9,67 @@ use App\Http\Controllers\Api\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
+/*
+|--------------------------------------------------------------------------
+| Rotas Públicas
+|--------------------------------------------------------------------------
+|
+| Estas rotas não exigem que o usuário esteja logado.
+|
+*/
 Route::post('/login', [LoginController::class, 'login'])->name('login');
-Route::post('/users', [UserController::class, 'store']); // POST - http://127.0.0.1:8000//mover pro sanctum dnv dps
-Route::post('/forgot-password', [UserController::class, 'forgotPassword']); // POST - http://127.0.0.1:8000/api/forgot-password
-Route::post('/reset-password', [UserController::class, 'resetPassword']); // POST - http://127.0.0.1:8000/api/reset-password
+Route::post('/users', [UserController::class, 'store']);
+Route::post('/forgot-password', [UserController::class, 'forgotPassword']);
+Route::post('/reset-password', [UserController::class, 'resetPassword']);
 
-   // Rotas para usuários
-    Route::get('/users', [UserController::class, 'index']); // GET - http://127.0.0.1:8000/api/users?page=1
-    Route::get('/users/{user}', [UserController::class, 'show']); // GET - http://127.0.0.1:8000/api/users/1
-    Route::put('/users/{user}', [UserController::class, 'update']); // PUT - http://127.0.0.1:8000/api/users/1
-    Route::delete('/users/{user}', [UserController::class, 'destroy']); // DELETE - http://127.0.0.1:8000/api/users/1
 
+/*
+|--------------------------------------------------------------------------
+| Rotas Protegidas por Autenticação (Sanctum)
+|--------------------------------------------------------------------------
+|
+| Todas as rotas dentro deste grupo só podem ser acessadas por
+| usuários que estão logados e enviando um token de autenticação válido.
+|
+*/
+Route::group(['middleware' => ['auth:sanctum']], function () {
+
+    // Rota de Logout
+    Route::post('/logout/{user}', [LoginController::class, 'logout']);
+
+    // Rotas para Usuários
+    Route::get('/users', [UserController::class, 'index']);
+    Route::get('/users/{user}', [UserController::class, 'show']);
+    Route::put('/users/{user}', [UserController::class, 'update']);
+    Route::delete('/users/{user}', [UserController::class, 'destroy']);
 
     // Rotas para Denuncias
-    Route::get('/denuncias', [DenunciaController::class, 'index']); // GET - http://127.0.0.1:8000/api/denuncias?page=1
-    Route::get('/denuncias/{denuncia}', [DenunciaController::class, 'show']); // GET - http://127.0.0.1:8000/api/denuncias/1
-    Route::post('/denuncias', [DenunciaController::class, 'store']); // POST - http://127.0.0.1:8000/api/denuncias
-    Route::put('/denuncias/{denuncia}', [DenunciaController::class, 'update']); // PUT - http://127.0.0.1:8000/api/denuncias/1
-    Route::delete('/denuncias/{denuncia}', [DenunciaController::class, 'destroy']); // DELETE - http://127.0.0.1:8000/api/denuncias/1
+    Route::get('/denuncias', [DenunciaController::class, 'index']);
+    Route::get('/denuncias/{denuncia}', [DenunciaController::class, 'show']);
+    Route::post('/denuncias', [DenunciaController::class, 'store']);
+    Route::put('/denuncias/{denuncia}', [DenunciaController::class, 'update']);
+    Route::delete('/denuncias/{denuncia}', [DenunciaController::class, 'destroy']);
+    Route::post('/denuncias/{denuncia}/finalizar', [DenunciaController::class, 'finalizar']); // Sua rota
+    Route::get('/relatorio/denuncias', [DenunciaController::class, 'relatorio']); // Sua rota
 
     // Rotas para Fotos
-    Route::get('/fotos', [FotoController::class, 'index']); // GET - http://127.0.0.1:8000/api/fotos?page=1
-    Route::get('/fotos/{foto}', [FotoController::class, 'show']); // GET - http://127.0.0.1:8000/api/fotos/1
-    Route::post('/fotos/{idDenuncia}', [App\Http\Controllers\Api\FotoController::class, 'store']); // POST - http://127.0.0.1:8000/api/fotos
-    Route::put('/fotos/{foto}', [FotoController::class, 'update']); // PUT - http://127.0.0.1:8000/api/fotos/1
-    Route::delete('/fotos/{foto}', [FotoController::class, 'destroy']); // DELETE - http://127.0.0.1:8000/api/fotos/1
+    Route::get('/fotos', [FotoController::class, 'index']);
+    Route::get('/fotos/{foto}', [FotoController::class, 'show']);
+    Route::post('/fotos/{idDenuncia}', [App\Http\Controllers\Api\FotoController::class, 'store']);
+    Route::put('/fotos/{foto}', [FotoController::class, 'update']);
+    Route::delete('/fotos/{foto}', [FotoController::class, 'destroy']);
 
     // Rotas para Resolucoes
-    Route::get('/resolucoes', [ResolucaoController::class, 'index']); // GET - http://127.0.0.1:8000/api/resolucoes?page=1
-    Route::get('/resolucoes/{resolucao}', [ResolucaoController::class, 'show']); // GET - http://127.0.0.1:8000/api/resolucoes/1
-    Route::post('/resolucoes', [ResolucaoController::class, 'store']); // POST - http://127.0.0.1:8000/api/resolucoes
-    Route::put('/resolucoes/{resolucao}', [ResolucaoController::class, 'update']); // PUT - http://127.0.0.1:8000/api/resolucoes/1
-    Route::delete('/resolucoes/{resolucao}', [ResolucaoController::class, 'destroy']); // DELETE - http://127.0.0.1:8000/api/resolucoes/1
+    Route::get('/resolucoes', [ResolucaoController::class, 'index']);
+    Route::get('/resolucoes/{resolucao}', [ResolucaoController::class, 'show']);
+    Route::post('/resolucoes', [ResolucaoController::class, 'store']);
+    Route::put('/resolucoes/{resolucao}', [ResolucaoController::class, 'update']);
+    Route::delete('/resolucoes/{resolucao}', [ResolucaoController::class, 'destroy']);
 
     // Rotas para HistoricoStatus
-    Route::get('/historicostatus', [HistoricoStatusController::class, 'index']); // GET - http://127.0.0.1:8000/api/historico-status?page=1
-    Route::get('/historicostatus/{historicoStatus}', [HistoricoStatusController::class, 'show']); // GET - http://127.0.0.1:8000/api/historico-status/1
-    Route::post('/historicostatus', [HistoricoStatusController::class, 'store']); // POST - http://127.0.0.1:8000/api/historico-status
-    Route::put('/historicostatus/{historicoStatus}', [HistoricoStatusController::class, 'update']); // PUT - http://127.0.0.1:8000/api/historico-status/1
-    Route::delete('/historicostatus/{historicoStatus}', [HistoricoStatusController::class, 'destroy']); // DELETE - http://127.0.0.1:8000/api/historico-status/1
-
-
-Route::group(['middleware' => ['auth:sanctum']], function () {
-    // Rotas protegidas por autenticação
-    Route::post('/logout/{user}', [LoginController::class, 'logout']); // POST - http://127.0.0.1:8000/api/logout
- 
-
+    Route::get('/historicostatus', [HistoricoStatusController::class, 'index']);
+    Route::get('/historicostatus/{historicoStatus}', [HistoricoStatusController::class, 'show']);
+    Route::post('/historicostatus', [HistoricoStatusController::class, 'store']);
+    Route::put('/historicostatus/{historicoStatus}', [HistoricoStatusController::class, 'update']);
+    Route::delete('/historicostatus/{historicoStatus}', [HistoricoStatusController::class, 'destroy']);
 });
