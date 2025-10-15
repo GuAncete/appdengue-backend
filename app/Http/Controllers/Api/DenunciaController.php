@@ -88,9 +88,12 @@ class DenunciaController extends Controller
      *     )
      * )
      */
-    public function store(Request $request){
-        DB::beginTransaction();
+  public function store(Request $request){
+        
+        
+       
 
+       
         try{
             $denuncia = Denuncia::create([
                 'IdUsuario' => $request->IdUsuario,
@@ -213,29 +216,72 @@ class DenunciaController extends Controller
             ], 400);
         }
     }
+    
+
+    
+
+    /**
+     * Atualiza o status de uma denúncia (Aprovar/Reprovar).
+     * Apenas para administradores.
+     */
+    public function updateStatus(Request $request, Denuncia $denuncia)
+    {
+        // 1. Trava de Segurança: Apenas administradores podem usar esta função.
+        $user = Auth::user();
+        if ($user->user_tipo != 1) {
+            return response()->json(['message' => 'Acesso não autorizado.'], 403); // 403 Forbidden
+        }
+
+        // 2. Validação: Garante que o status enviado é válido (2 para Aprovar, 4 para Rejeitar).
+        $request->validate([
+            'Status' => 'required|integer|in:2,4',
+        ]);
+
+        try {
+            // 3. Atualiza o status e salva no banco de dados.
+            $denuncia->Status = $request->Status;
+            $denuncia->save();
+
+            return response()->json([
+                'status' => 'ok',
+                'message' => 'Status da denúncia atualizado com sucesso!',
+                'denuncia' => $denuncia
+            ], 200);
+
+        } catch (Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Não foi possível atualizar o status da denúncia.'
+            ], 500);
+        }
+    }
+
+// ... (resto das funções, como finalizar e relatorio)
+
+
 
     /**
  * Marca uma denúncia como finalizada.
  */
-public function finalizar(Denuncia $denuncia)
-    {
-        // Verifica se a denúncia já foi finalizada para não sobrescrever a data
-        if ($denuncia->data_fim) {
+    public function finalizar(Denuncia $denuncia)
+        {
+            // Verifica se a denúncia já foi finalizada para não sobrescrever a data
+            if ($denuncia->data_fim) {
+                return response()->json([
+                    'message' => 'Esta denúncia já foi finalizada anteriormente.'
+                ], 409); // 409 Conflict
+            }
+
+            // Atualiza a coluna 'data_fim' com a data e hora atuais
+            $denuncia->data_fim = now();
+            $denuncia->save();
+
+            // Retorna uma resposta de sucesso
             return response()->json([
-                'message' => 'Esta denúncia já foi finalizada anteriormente.'
-            ], 409); // 409 Conflict
+                'message' => 'Denúncia finalizada com sucesso!',
+                'denuncia' => $denuncia
+            ]);
         }
-
-        // Atualiza a coluna 'data_fim' com a data e hora atuais
-        $denuncia->data_fim = now();
-        $denuncia->save();
-
-        // Retorna uma resposta de sucesso
-        return response()->json([
-            'message' => 'Denúncia finalizada com sucesso!',
-            'denuncia' => $denuncia
-        ]);
-    }
 
         public function relatorio()
     {

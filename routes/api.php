@@ -72,4 +72,40 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::post('/historicostatus', [HistoricoStatusController::class, 'store']);
     Route::put('/historicostatus/{historicoStatus}', [HistoricoStatusController::class, 'update']);
     Route::delete('/historicostatus/{historicoStatus}', [HistoricoStatusController::class, 'destroy']);
+
+
+    
+    // routes/api.php
+
+    
+        Route::put('/users/{user}', [UserController::class, 'update']);
+        
+        // NOVO: Rota específica para alterar o cargo do usuário
+        Route::patch('/users/{user}/role', [UserController::class, 'updateRole']); 
+        
+        Route::delete('/users/{user}', [UserController::class, 'destroy']);
+    // ...
+
+
+    // routes/api.php
+
+    
+        Route::put('/denuncias/{denuncia}', [DenunciaController::class, 'update']);
+        
+        // NOVO: Rota específica para o admin aprovar/reprovar uma denúncia
+        Route::patch('/denuncias/{denuncia}/status', [DenunciaController::class, 'updateStatus']);
+        
+        Route::delete('/denuncias/{denuncia}', [DenunciaController::class, 'destroy']);
+    // ...
+
+    // routes/api.php
+
+    
+        Route::put('/denuncias/{denuncia}', [DenunciaController::class, 'update']);
+        
+        // NOVO: Rota específica para o admin aprovar/reprovar uma denúncia
+        Route::patch('/denuncias/{denuncia}/status', [DenunciaController::class, 'updateStatus']);
+        
+        Route::delete('/denuncias/{denuncia}', [DenunciaController::class, 'destroy']);
+    // ...
 });

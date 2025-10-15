@@ -274,4 +274,36 @@ class UserController extends Controller
             'message' => "Erro ao resetar a senha"
         ], 400);
     }
+
+    // app/Http/Controllers/Api/UserController.php
+
+// ... (depois da função resetPassword)
+
+    /**
+     * Atualiza apenas o cargo (role) de um usuário.
+     */
+    public function updateRole(Request $request, User $user): JsonResponse
+    {
+        // Validação simples para garantir que o 'user_tipo' foi enviado e é um número.
+        $request->validate([
+            'user_tipo' => 'required|integer|in:1,2,3', // Garante que só aceita 1, 2 ou 3
+        ]);
+
+        try {
+            $user->user_tipo = $request->user_tipo;
+            $user->save();
+
+            return response()->json([
+                'status' => 'ok',
+                'message' => 'Cargo do usuário atualizado com sucesso.',
+                'user' => $user
+            ], 200);
+
+        } catch (Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Não foi possível atualizar o cargo do usuário.'
+            ], 500);
+        }
+    }
 }
